@@ -10,7 +10,7 @@ Summary:        Library to Instrument Executable Formats
 License:        Apache-2.0
 
 %global         forgeurl0 https://github.com/lief-project/LIEF
-%global         tag0      0.16.5
+%global         tag0      c93ee79b2a134b63593152dd4148b8a7cb94980b
 %forgemeta
 
 URL:            https://lief.re
