@@ -1,0 +1,24 @@
+_:
+  - &actions-use-spec
+    fix-spec-file: []
+    create-archive:
+      - sh -c 'echo ${PACKIT_DOWNSTREAM_PACKAGE_NAME}.spec'
+    get-current-version:
+      - sh -c 'rpmspec -q --qf "%{Version}" --srpm ${PACKIT_DOWNSTREAM_PACKAGE_NAME}.spec'
+
+packages:
+  lief:
+    paths: [ lief ]
+    specfile_path: lief.spec
+    downstream_package_name: lief
+    actions: *actions-use-spec
+
+targets:
+  - fedora-rawhide
+  - fedora-42
+
+jobs:
+  - job: copr_build
+    trigger: commit
+    owner: lecris
+    project: lief
