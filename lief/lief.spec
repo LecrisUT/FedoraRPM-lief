@@ -16,9 +16,13 @@ License:        Apache-2.0
 URL:            https://lief.re
 Source:         %{forgesource0}
 
+Patch:          lief-0.16.5-Remove_Melkor.patch
+
+# Should be using c++20 span, but it causes lots of issues
 Provides:       bundled(span)
 
 BuildRequires:  cmake
+BuildRequires:  ninja-build
 BuildRequires:  gcc
 BuildRequires:  gcc-c++
 BuildRequires:  json-devel
@@ -27,6 +31,7 @@ BuildRequires:  expected-devel
 BuildRequires:  utf8cpp-devel
 BuildRequires:  mbedtls-devel
 BuildRequires:  frozen-devel
+BuildRequires:  catch-devel
 %if %{with python}
 BuildRequires:  python3-devel
 %endif
@@ -58,6 +63,9 @@ This package contains python API.
 
 %prep
 %forgeautosetup -p1
+mv third-party/tcb-span-* ./
+rm -rf third-party/*
+mv tcb-span-* third-party/
 
 
 %generate_buildrequires
@@ -70,7 +78,11 @@ popd
 
 %conf
 %cmake \
+  -G Ninja \
+  -DCMAKE_BUILD_TYPE:STRING=RelWithDebInfo \
+  -DFETCHCONTENT_TRY_FIND_PACKAGE_MODE:STRING=ALWAYS \
   -DLIEF_TESTS:BOOL=ON \
+  -DLIEF_EXAMPLES:BOOL=OFF \
   -DLIEF_C_API:BOOL=ON \
   -DLIEF_PYTHON_API:BOOL=OFF \
   -DLIEF_RUST_API:BOOL=OFF \
