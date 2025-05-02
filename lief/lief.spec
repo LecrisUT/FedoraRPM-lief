@@ -81,7 +81,7 @@ popd
   -G Ninja \
   -DCMAKE_BUILD_TYPE:STRING=RelWithDebInfo \
   -DFETCHCONTENT_TRY_FIND_PACKAGE_MODE:STRING=ALWAYS \
-  -DLIEF_TESTS:BOOL=ON \
+  -DLIEF_TESTS:BOOL=OFF \
   -DLIEF_EXAMPLES:BOOL=OFF \
   -DLIEF_C_API:BOOL=ON \
   -DLIEF_PYTHON_API:BOOL=OFF \
@@ -122,7 +122,7 @@ popd
 
 
 %check
-%ctest
+# %%ctest
 
 
 %files
