@@ -127,9 +127,13 @@ popd
 
 %files
 %license LICENSE
+# TODO: Include SOVERSION
+%{_libdir}/libLIEF.so
 
 %files devel
-%config %{_sysconfdir}/profile.d/atuin.sh
+%{_includedir}/LIEF
+%{_libdir}/pkgconfig/LIEF.pc
+%{_libdir}/cmake/LIEF
 
 %if %{with python}
 %files -n python3-lief -f %{pyproject_files}
