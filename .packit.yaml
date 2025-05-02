@@ -13,10 +13,6 @@ packages:
     downstream_package_name: lief
     actions: *actions-use-spec
 
-targets:
-  - fedora-rawhide
-  - fedora-42
-
 jobs:
   - job: copr_build
     trigger: commit
