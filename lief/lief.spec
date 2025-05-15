@@ -10,13 +10,12 @@ Summary:        Library to Instrument Executable Formats
 License:        Apache-2.0
 
 %global         forgeurl0 https://github.com/lief-project/LIEF
-%global         tag0      c93ee79b2a134b63593152dd4148b8a7cb94980b
+# Picking up a few changes that fix packaging issues
+%global         tag0      dc66460141c7b14a8ac36e9d9478d73badbbc621
 %forgemeta
 
 URL:            https://lief.re
 Source:         %{forgesource0}
-
-Patch:          lief-0.16.5-Remove_Melkor.patch
 
 # Should be using c++20 span, but it causes lots of issues
 Provides:       bundled(span)
@@ -86,7 +85,9 @@ popd
   -DLIEF_C_API:BOOL=ON \
   -DLIEF_PYTHON_API:BOOL=OFF \
   -DLIEF_RUST_API:BOOL=OFF \
+  -DLIEF_SO_VERSION:BOOL=ON \
   -DLIEF_LOGGING_DEBUG:BOOL=OFF \
+  -DLIEF_USE_MELKOR:BOOL=OFF \
   -DLIEF_OPT_NLOHMANN_JSON_EXTERNAL:BOOL=ON \
   -DLIEF_EXTERNAL_SPDLOG:BOOL=ON \
   -DLIEF_OPT_EXTERNAL_EXPECTED:BOOl=ON \
@@ -127,13 +128,13 @@ popd
 
 %files
 %license LICENSE
-# TODO: Include SOVERSION
-%{_libdir}/libLIEF.so
+%{_libdir}/libLIEF.so.*
 
 %files devel
 %{_includedir}/LIEF
 %{_libdir}/pkgconfig/LIEF.pc
 %{_libdir}/cmake/LIEF
+%{_libdir}/libLIEF.so
 
 %if %{with python}
 %files -n python3-lief -f %{pyproject_files}
