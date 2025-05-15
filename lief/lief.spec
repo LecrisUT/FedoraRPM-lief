@@ -6,6 +6,10 @@ Version:        0.16.5
 Release:        %autorelease
 Summary:        Library to Instrument Executable Formats
 
+# Fails to build on s390x
+# https://github.com/lief-project/LIEF/issues/1210
+ExcludeArch:    s390x
+
 # Main project is Apache-2.0
 # Some bundled CMake files come from Kitware
 # - cmake/ios.toolchain.cmake
