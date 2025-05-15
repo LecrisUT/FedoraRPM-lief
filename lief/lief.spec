@@ -6,8 +6,12 @@ Version:        0.16.5
 Release:        %autorelease
 Summary:        Library to Instrument Executable Formats
 
-# TODO: License check
-License:        Apache-2.0
+# Main project is Apache-2.0
+# Some bundled CMake files come from Kitware
+# - cmake/ios.toolchain.cmake
+# Bundled span is BSL-1.0
+SourceLicense:  Apache-2.0 AND BSL-1.0 AND BSD-3-Clause
+License:        Apache-2.0 AND BSL-1.0
 
 %global         forgeurl0 https://github.com/lief-project/LIEF
 # Picking up a few changes that fix packaging issues
