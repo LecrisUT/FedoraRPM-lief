@@ -2,8 +2,16 @@
 %bcond python 0
 %bcond ctest  0
 
+
+%global         forgeurl0 https://github.com/lief-project/LIEF
+# Picking up a few changes that fix packaging issues
+%global         version0  0.16.5
+%global         date      20250521
+%global         commit0   dc66460141c7b14a8ac36e9d9478d73badbbc621
+%forgemeta
+
 Name:           lief
-Version:        0.16.5
+Version:        %forgeversion
 Release:        %autorelease
 Summary:        Library to Instrument Executable Formats
 
@@ -16,11 +24,6 @@ ExcludeArch:    s390x
 # - cmake/ios.toolchain.cmake
 SourceLicense:  Apache-2.0 AND BSD-3-Clause
 License:        Apache-2.0
-
-%global         forgeurl0 https://github.com/lief-project/LIEF
-# Picking up a few changes that fix packaging issues
-%global         tag0      dc66460141c7b14a8ac36e9d9478d73badbbc621
-%forgemeta
 
 URL:            https://lief.re
 Source:         %{forgesource0}
