@@ -2,10 +2,11 @@
 %bcond python 0
 %bcond ctest  0
 
+%global         soversion 0
 
 %global         forgeurl0 https://github.com/lief-project/LIEF
 # Picking up a few changes that fix packaging issues
-%global         version0  0.16.5
+%global         version0  %{soversion}.16.5
 %global         date      20250521
 %global         commit0   dc66460141c7b14a8ac36e9d9478d73badbbc621
 %forgemeta
@@ -138,7 +139,8 @@ popd
 
 %files
 %license LICENSE
-%{_libdir}/libLIEF.so.*
+%{_libdir}/libLIEF.so.%{soversion}
+%{_libdir}/libLIEF.so.%{soversion}.*
 
 %files devel
 %{_includedir}/LIEF
