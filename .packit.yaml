@@ -15,6 +15,11 @@ packages:
     specfile_path: lief.spec
     downstream_package_name: lief
     actions: *actions-use-spec
+  span:
+    paths: [ span ]
+    specfile_path: span.spec
+    downstream_package_name: span
+    actions: *actions-use-spec
 
 jobs:
   - job: copr_build

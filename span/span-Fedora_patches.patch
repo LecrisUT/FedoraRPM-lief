@@ -1,0 +1,121 @@
+diff -ru span-836dc6a0efd9849cb194e88e4aa2387436bb079b/CMakeLists.txt span-836dc6a0efd9849cb194e88e4aa2387436bb079b-new/CMakeLists.txt
+--- span-836dc6a0efd9849cb194e88e4aa2387436bb079b/CMakeLists.txt	2022-06-15 19:03:47.000000000 +0200
++++ span-836dc6a0efd9849cb194e88e4aa2387436bb079b-new/CMakeLists.txt	2025-05-21 10:50:50.867285727 +0200
+@@ -1,14 +1,20 @@
+ 
+-cmake_minimum_required(VERSION 3.8)
++cmake_minimum_required(VERSION 3.23...4.0)
+ project(span LANGUAGES CXX)
+ 
+ enable_testing()
+ 
+ add_library(span INTERFACE)
+-target_sources(span INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include/tcb/span.hpp)
+-target_include_directories(span INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
++target_sources(span INTERFACE
++  FILE_SET HEADERS
++  BASE_DIRS include
++  FILES
++      include/tcb/span.hpp
++)
+ target_compile_features(span INTERFACE cxx_std_11)
+ 
+-set(TCB_SPAN_TEST_CXX_STD 11 CACHE STRING "C++ standard version for testing")
++set(TCB_SPAN_TEST_CXX_STD 17 CACHE STRING "C++ standard version for testing")
+ 
+ add_subdirectory(test)
++
++install(TARGETS span FILE_SET HEADERS)
+Only in span-836dc6a0efd9849cb194e88e4aa2387436bb079b/test: catch.hpp
+Only in span-836dc6a0efd9849cb194e88e4aa2387436bb079b/test: catch_main.cpp
+diff -ru span-836dc6a0efd9849cb194e88e4aa2387436bb079b/test/CMakeLists.txt span-836dc6a0efd9849cb194e88e4aa2387436bb079b-new/test/CMakeLists.txt
+--- span-836dc6a0efd9849cb194e88e4aa2387436bb079b/test/CMakeLists.txt	2022-06-15 19:03:47.000000000 +0200
++++ span-836dc6a0efd9849cb194e88e4aa2387436bb079b-new/test/CMakeLists.txt	2025-05-21 10:44:38.947019001 +0200
+@@ -1,18 +1,7 @@
+-
+-if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic")
+-endif()
+-
+-if(MSVC)
+-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /permissive-")
+-endif()
++find_package(Catch2 3 REQUIRED)
+ 
+ set(CMAKE_CXX_EXTENSIONS Off)
+ 
+-add_library(catch_main catch_main.cpp)
+-set_target_properties(catch_main PROPERTIES
+-    CXX_STANDARD ${TCB_SPAN_TEST_CXX_STD})
+-
+ set(TEST_FILES
+     test_span.cpp
+ )
+@@ -24,14 +13,14 @@
+ endif()
+ 
+ add_executable(test_span ${TEST_FILES})
+-target_link_libraries(test_span PUBLIC span catch_main)
++target_link_libraries(test_span PUBLIC span Catch2::Catch2WithMain)
+ set_target_properties(test_span PROPERTIES
+                       CXX_STANDARD ${TCB_SPAN_TEST_CXX_STD})
+ add_test(test_span test_span)
+ 
+ add_executable(test_span_contract_checking
+                test_contract_checking.cpp)
+-target_link_libraries(test_span_contract_checking PUBLIC span catch_main)
++target_link_libraries(test_span_contract_checking PUBLIC span Catch2::Catch2WithMain)
+ set_target_properties(test_span_contract_checking PROPERTIES
+     CXX_STANDARD ${TCB_SPAN_TEST_CXX_STD})
+ add_test(test_contract_checking test_span_contract_checking)
+\ No newline at end of file
+diff -ru span-836dc6a0efd9849cb194e88e4aa2387436bb079b/test/test_contract_checking.cpp span-836dc6a0efd9849cb194e88e4aa2387436bb079b-new/test/test_contract_checking.cpp
+--- span-836dc6a0efd9849cb194e88e4aa2387436bb079b/test/test_contract_checking.cpp	2022-06-15 19:03:47.000000000 +0200
++++ span-836dc6a0efd9849cb194e88e4aa2387436bb079b-new/test/test_contract_checking.cpp	2025-05-21 10:45:19.656606029 +0200
+@@ -3,7 +3,7 @@
+ #define TCB_SPAN_THROW_ON_CONTRACT_VIOLATION
+ #include <tcb/span.hpp>
+ 
+-#include "catch.hpp"
++#include <catch2/catch_test_macros.hpp>
+ 
+ #include <vector>
+ 
+diff -ru span-836dc6a0efd9849cb194e88e4aa2387436bb079b/test/test_deduction_guides.cpp span-836dc6a0efd9849cb194e88e4aa2387436bb079b-new/test/test_deduction_guides.cpp
+--- span-836dc6a0efd9849cb194e88e4aa2387436bb079b/test/test_deduction_guides.cpp	2022-06-15 19:03:47.000000000 +0200
++++ span-836dc6a0efd9849cb194e88e4aa2387436bb079b-new/test/test_deduction_guides.cpp	2025-05-21 10:45:19.668605907 +0200
+@@ -1,7 +1,7 @@
+ 
+ #include <tcb/span.hpp>
+ 
+-#include "catch.hpp"
++#include <catch2/catch_test_macros.hpp>
+ 
+ #include <vector>
+ 
+diff -ru span-836dc6a0efd9849cb194e88e4aa2387436bb079b/test/test_span.cpp span-836dc6a0efd9849cb194e88e4aa2387436bb079b-new/test/test_span.cpp
+--- span-836dc6a0efd9849cb194e88e4aa2387436bb079b/test/test_span.cpp	2022-06-15 19:03:47.000000000 +0200
++++ span-836dc6a0efd9849cb194e88e4aa2387436bb079b-new/test/test_span.cpp	2025-05-21 10:48:05.349944188 +0200
+@@ -6,8 +6,9 @@
+ #include <deque>
+ #include <initializer_list>
+ #include <vector>
++#include <algorithm>
+ 
+-#include "catch.hpp"
++#include <catch2/catch_test_macros.hpp>
+ 
+ using tcb::span;
+ 
+diff -ru span-836dc6a0efd9849cb194e88e4aa2387436bb079b/test/test_structured_bindings.cpp span-836dc6a0efd9849cb194e88e4aa2387436bb079b-new/test/test_structured_bindings.cpp
+--- span-836dc6a0efd9849cb194e88e4aa2387436bb079b/test/test_structured_bindings.cpp	2022-06-15 19:03:47.000000000 +0200
++++ span-836dc6a0efd9849cb194e88e4aa2387436bb079b-new/test/test_structured_bindings.cpp	2025-05-21 10:45:19.676605826 +0200
+@@ -1,7 +1,7 @@
+ 
+ #include <tcb/span.hpp>
+ 
+-#include "catch.hpp"
++#include <catch2/catch_test_macros.hpp>
+ 
+ using static_span_t = tcb::span<int, 3>;
+ using dynamic_span_t = tcb::span<int>;

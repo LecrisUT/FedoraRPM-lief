@@ -25,9 +25,6 @@ License:        Apache-2.0 AND BSL-1.0
 URL:            https://lief.re
 Source:         %{forgesource0}
 
-# Should be using c++20 span, but it causes lots of issues
-Provides:       bundled(span)
-
 BuildRequires:  cmake
 BuildRequires:  ninja-build
 BuildRequires:  gcc
@@ -38,6 +35,7 @@ BuildRequires:  expected-devel
 BuildRequires:  utf8cpp-devel
 BuildRequires:  mbedtls-devel
 BuildRequires:  frozen-devel
+BuildRequires:  span-devel
 BuildRequires:  catch-devel
 %if %{with python}
 BuildRequires:  python3-devel
@@ -70,9 +68,7 @@ This package contains python API.
 
 %prep
 %forgeautosetup -p1
-mv third-party/tcb-span-* ./
 rm -rf third-party/*
-mv tcb-span-* third-party/
 
 
 %generate_buildrequires
@@ -101,7 +97,8 @@ popd
   -DLIEF_OPT_EXTERNAL_EXPECTED:BOOl=ON \
   -DLIEF_OPT_UTFCPP_EXTERNAL:BOOL=ON \
   -DLIEF_OPT_MBEDTLS_EXTERNAL:BOOL=ON \
-  -DLIEF_OPT_FROZEN_EXTERNAL:BOOL=ON
+  -DLIEF_OPT_FROZEN_EXTERNAL:BOOL=ON \
+  -DLIEF_EXTERNAL_SPAN:BOOL=ON
 
 
 %build
