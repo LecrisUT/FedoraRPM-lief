@@ -6,13 +6,13 @@
 
 %global         forgeurl0 https://github.com/lief-project/LIEF
 # Picking up a few changes that fix packaging issues
-%global         version0  %{soversion}.16.5
+%global         version0  %{soversion}.17.0
 %global         date      20250521
 %global         commit0   dc66460141c7b14a8ac36e9d9478d73badbbc621
 %forgemeta
 
 Name:           lief
-Version:        %forgeversion
+Version:        %forgeversion -p
 Release:        %autorelease
 Summary:        Library to Instrument Executable Formats
 
