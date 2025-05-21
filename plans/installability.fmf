@@ -1,0 +1,7 @@
+plan:
+  import:
+    url: https://github.com/LecrisUT/installability-pipeline
+    name: /installability
+    ref: feat/copr
+environment:
+  PROFILE_NAME: fedora-43
