@@ -1,5 +1,6 @@
 # Python API needs some
 %bcond python 0
+%bcond ctest  0
 
 Name:           lief
 Version:        0.16.5
@@ -128,7 +129,9 @@ popd
 
 
 %check
-# %%ctest
+%if %{with ctest}
+%ctest
+%endif
 
 
 %files
