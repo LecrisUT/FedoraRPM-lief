@@ -9,14 +9,16 @@
 Name:           span
 Version:        %forgeversion -p
 Release:        %autorelease
-Summary:        std::span implementation for C++11 and later
+Summary:        Implementation of C++20's std::span for older compilers
 
 License:        BSL-1.0
 
 URL:            %forgeurl0
 Source:         %forgesource0
 
+# Fix build without exceptions
 Patch0:         https://github.com/tcbrindle/span/pull/53.patch
+# Make the project installable
 Patch1:         span-Fedora_patches.patch
 
 BuildRequires:  cmake
@@ -65,7 +67,10 @@ This package contains the development files.
 
 
 %files devel
+%dir %{_includedir}/tcb
 %{_includedir}/tcb/span.hpp
+%license LICENSE_1_0.txt
+%doc README.md
 
 
 %changelog
