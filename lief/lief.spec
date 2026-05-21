@@ -1,24 +1,21 @@
-# Python API needs some
+# Python API needs some more work
+# - does not pick up the cmake configs
 %bcond python 0
+# ctest did not work properly
+# - fail to build unittest
 %bcond ctest  0
 
 %global         soversion 0
 
 %global         forgeurl0 https://github.com/lief-project/LIEF
-# Picking up a few changes that fix packaging issues
-%global         version0  %{soversion}.17.0
-%global         date      20250521
-%global         commit0   dc66460141c7b14a8ac36e9d9478d73badbbc621
+%global         version0  %{soversion}.17.6
+%global         tag0      %{version0}
 %forgemeta
 
 Name:           lief
 Version:        %forgeversion -p
 Release:        %autorelease
 Summary:        Library to Instrument Executable Formats
-
-# Fails to build on s390x
-# https://github.com/lief-project/LIEF/issues/1210
-ExcludeArch:    s390x
 
 # Main project is Apache-2.0
 # Some bundled CMake files come from Kitware
@@ -43,6 +40,7 @@ BuildRequires:  span-devel
 BuildRequires:  catch-devel
 %if %{with python}
 BuildRequires:  python3-devel
+BuildRequires:  python3-nanobind
 %endif
 
 %global _description %{expand:
@@ -73,13 +71,25 @@ This package contains python API.
 %prep
 %forgeautosetup -p1
 rm -rf third-party/*
+%if %{with python}
+# Unpin the python dependencies, these are used only for build, so if there is an issue, we will see it
+pushd api/python
+%pyproject_patch_dependency tomli:drop_constraints
+%pyproject_patch_dependency scikit-build-core:drop_constraints
+%pyproject_patch_dependency setuptools:drop_constraints
+%pyproject_patch_dependency pydantic:drop_constraints
+%pyproject_patch_dependency pathspec:drop_constraints
+%pyproject_patch_dependency build:drop_constraints
+%pyproject_patch_dependency wheel:drop_constraints
+popd
+%endif
 
 
 %generate_buildrequires
 %if %{with python}
-pushd api/python
+pushd api/python > /dev/null
 %pyproject_buildrequires
-popd
+popd > /dev/null
 %endif
 
 
@@ -88,7 +98,7 @@ popd
   -G Ninja \
   -DCMAKE_BUILD_TYPE:STRING=RelWithDebInfo \
   -DFETCHCONTENT_TRY_FIND_PACKAGE_MODE:STRING=ALWAYS \
-  -DLIEF_TESTS:BOOL=OFF \
+  -DLIEF_TESTS:BOOL=%{with ctest} \
   -DLIEF_EXAMPLES:BOOL=OFF \
   -DLIEF_C_API:BOOL=ON \
   -DLIEF_PYTHON_API:BOOL=OFF \
@@ -114,6 +124,7 @@ pushd api/python
 %{pyproject_wheel %{shrink:
   -C cmake.build-type=RelWithDebInfo
   -C cmake.define.LIEF_ROOT=${build_dir}
+  -C cmake.define.LIEF_EXTERNAL_NANOBIND=true
   -C cmake.define.LIEF_PY_LIEF_EXT=true
   -C cmake.define.LIEF_PY_LIEF_EXT_SHARED=true
 }}
